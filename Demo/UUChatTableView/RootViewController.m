@@ -8,15 +8,14 @@
 
 #import "RootViewController.h"
 #import "UUInputFunctionView.h"
-#import "MJRefresh.h"
 #import "UUMessageCell.h"
 #import "ChatModel.h"
 #import "UUMessageFrame.h"
 #import "UUMessage.h"
+#import <MJRefresh.h>
 
 @interface RootViewController ()<UUInputFunctionViewDelegate,UUMessageCellDelegate,UITableViewDataSource,UITableViewDelegate>
 
-@property (strong, nonatomic) MJRefreshHeaderView *head;
 @property (strong, nonatomic) ChatModel *chatModel;
 
 @property (weak, nonatomic) IBOutlet UITableView *chatTableView;
@@ -78,10 +77,7 @@
     //load more
     int pageNum = 3;
     
-    _head = [MJRefreshHeaderView header];
-    _head.scrollView = self.chatTableView;
-    _head.beginRefreshingBlock = ^(MJRefreshBaseView *refreshView) {
-        
+    self.chatTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [weakSelf.chatModel addRandomItemsToDataSource:pageNum];
         
         if (weakSelf.chatModel.dataSource.count > pageNum) {
@@ -92,8 +88,9 @@
                 [weakSelf.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
             });
         }
-        [weakSelf.head endRefreshing];
-    };
+        [weakSelf.chatTableView.mj_header endRefreshing];
+
+    }];
 }
 
 - (void)loadBaseViewsAndData
