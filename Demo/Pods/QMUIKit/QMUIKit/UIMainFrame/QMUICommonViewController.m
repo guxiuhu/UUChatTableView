@@ -8,10 +8,11 @@
 
 #import "QMUICommonViewController.h"
 #import "QMUICommonDefines.h"
-#import "QMUIConfiguration.h"
+#import "QMUIConfigurationMacros.h"
 #import "QMUIHelper.h"
 #import "QMUINavigationTitleView.h"
 #import "QMUIEmptyView.h"
+#import "NSString+QMUI.h"
 
 @interface QMUICommonViewController ()
 
@@ -193,7 +194,11 @@
 
 - (void)setNavigationItemsIsInEditMode:(BOOL)isInEditMode animated:(BOOL)animated {
     // 子类重写
-    self.navigationItem.titleView = self.titleView;
+    if (IOS_VERSION < 8.0 && [NSStringFromClass(self.navigationItem.class) qmui_includesString:@"UISearchBarNavigationItem"]) {
+        // iOS 7 下，UISearchDisplayController.displaysSearchBarInNavigationBar 为 YES 时，不允许修改 self.navigationItem
+    } else {
+        self.navigationItem.titleView = self.titleView;
+    }
 }
 
 - (void)setToolbarItemsIsInEditMode:(BOOL)isInEditMode animated:(BOOL)animated {

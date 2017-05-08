@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UUMessageContentButton.h"
 
 @class UUMessage;
 @class UUMessageCell;

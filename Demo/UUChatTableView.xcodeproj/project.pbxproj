@@ -20,7 +20,7 @@
 		B7B9052A1A5B770200A46EFD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7B905291A5B770200A46EFD /* Images.xcassets */; };
 		B7B9052D1A5B770200A46EFD /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B7B9052B1A5B770200A46EFD /* LaunchScreen.xib */; };
 		B7B905391A5B770200A46EFD /* UUChatTableViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905381A5B770200A46EFD /* UUChatTableViewTests.m */; };
-		B7B905451A5B772900A46EFD /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905431A5B772900A46EFD /* RootViewController.m */; };
+		B7B905451A5B772900A46EFD /* CMChatVCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905431A5B772900A46EFD /* CMChatVCtrl.m */; };
 		B7B905651A5B7F6D00A46EFD /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7B905621A5B7F6D00A46EFD /* libmp3lame.a */; };
 		B7B905661A5B7F6D00A46EFD /* Mp3Recorder.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905641A5B7F6D00A46EFD /* Mp3Recorder.m */; };
 		B7B9057D1A5B7F8B00A46EFD /* chat_ipunt_message.png in Resources */ = {isa = PBXBuildFile; fileRef = B7B9056E1A5B7F8B00A46EFD /* chat_ipunt_message.png */; };
@@ -36,7 +36,6 @@
 		B7B905E71A5BCFD700A46EFD /* UUInputFunctionView.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905DA1A5BCFD700A46EFD /* UUInputFunctionView.m */; };
 		B7B905E81A5BCFD700A46EFD /* UUMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905DC1A5BCFD700A46EFD /* UUMessage.m */; };
 		B7B905E91A5BCFD700A46EFD /* UUMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905DE1A5BCFD700A46EFD /* UUMessageCell.m */; };
-		B7B905EA1A5BCFD700A46EFD /* UUMessageContentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905E01A5BCFD700A46EFD /* UUMessageContentButton.m */; };
 		B7B905EC1A5BCFD700A46EFD /* UUProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905E41A5BCFD700A46EFD /* UUProgressHUD.m */; };
 		B7B905EF1A5BD04700A46EFD /* ChatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905EE1A5BD04700A46EFD /* ChatModel.m */; };
 		F0D1432F1AD6A56300881F5B /* 0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = F0D1432A1AD6A56300881F5B /* 0.jpeg */; };
@@ -74,8 +73,8 @@
 		B7B905321A5B770200A46EFD /* UUChatTableViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UUChatTableViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7B905371A5B770200A46EFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B7B905381A5B770200A46EFD /* UUChatTableViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UUChatTableViewTests.m; sourceTree = "<group>"; };
-		B7B905421A5B772900A46EFD /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
-		B7B905431A5B772900A46EFD /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		B7B905421A5B772900A46EFD /* CMChatVCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMChatVCtrl.h; sourceTree = "<group>"; };
+		B7B905431A5B772900A46EFD /* CMChatVCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMChatVCtrl.m; sourceTree = "<group>"; };
 		B7B905471A5B77E600A46EFD /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		B7B905611A5B7F6D00A46EFD /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		B7B905621A5B7F6D00A46EFD /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
@@ -101,8 +100,6 @@
 		B7B905DC1A5BCFD700A46EFD /* UUMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUMessage.m; sourceTree = "<group>"; };
 		B7B905DD1A5BCFD700A46EFD /* UUMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUMessageCell.h; sourceTree = "<group>"; };
 		B7B905DE1A5BCFD700A46EFD /* UUMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUMessageCell.m; sourceTree = "<group>"; };
-		B7B905DF1A5BCFD700A46EFD /* UUMessageContentButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUMessageContentButton.h; sourceTree = "<group>"; };
-		B7B905E01A5BCFD700A46EFD /* UUMessageContentButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUMessageContentButton.m; sourceTree = "<group>"; };
 		B7B905E31A5BCFD700A46EFD /* UUProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUProgressHUD.h; sourceTree = "<group>"; };
 		B7B905E41A5BCFD700A46EFD /* UUProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUProgressHUD.m; sourceTree = "<group>"; };
 		B7B905ED1A5BD04700A46EFD /* ChatModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatModel.h; sourceTree = "<group>"; };
@@ -170,8 +167,8 @@
 			children = (
 				B7B905201A5B770200A46EFD /* AppDelegate.h */,
 				B7B905211A5B770200A46EFD /* AppDelegate.m */,
-				B7B905421A5B772900A46EFD /* RootViewController.h */,
-				B7B905431A5B772900A46EFD /* RootViewController.m */,
+				B7B905421A5B772900A46EFD /* CMChatVCtrl.h */,
+				B7B905431A5B772900A46EFD /* CMChatVCtrl.m */,
 				B7B905ED1A5BD04700A46EFD /* ChatModel.h */,
 				B7B905EE1A5BD04700A46EFD /* ChatModel.m */,
 				B7B905291A5B770200A46EFD /* Images.xcassets */,
@@ -267,8 +264,6 @@
 				B7B905DC1A5BCFD700A46EFD /* UUMessage.m */,
 				B7B905DD1A5BCFD700A46EFD /* UUMessageCell.h */,
 				B7B905DE1A5BCFD700A46EFD /* UUMessageCell.m */,
-				B7B905DF1A5BCFD700A46EFD /* UUMessageContentButton.h */,
-				B7B905E01A5BCFD700A46EFD /* UUMessageContentButton.m */,
 				B7B905E31A5BCFD700A46EFD /* UUProgressHUD.h */,
 				B7B905E41A5BCFD700A46EFD /* UUProgressHUD.m */,
 			);
@@ -424,7 +419,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D9D77B1D40700DFE538E0B6D /* [CP] Copy Pods Resources */ = {
@@ -466,7 +461,7 @@
 			files = (
 				B7B905EC1A5BCFD700A46EFD /* UUProgressHUD.m in Sources */,
 				B7B905221A5B770200A46EFD /* AppDelegate.m in Sources */,
-				B7B905451A5B772900A46EFD /* RootViewController.m in Sources */,
+				B7B905451A5B772900A46EFD /* CMChatVCtrl.m in Sources */,
 				B7B905E91A5BCFD700A46EFD /* UUMessageCell.m in Sources */,
 				B7B905E71A5BCFD700A46EFD /* UUInputFunctionView.m in Sources */,
 				B7B9051F1A5B770200A46EFD /* main.m in Sources */,
@@ -475,7 +470,6 @@
 				B7B905C01A5B7FCB00A46EFD /* NSDate+Utils.m in Sources */,
 				B7B905661A5B7F6D00A46EFD /* Mp3Recorder.m in Sources */,
 				B7B905E81A5BCFD700A46EFD /* UUMessage.m in Sources */,
-				B7B905EA1A5BCFD700A46EFD /* UUMessageContentButton.m in Sources */,
 				B7B905EF1A5BD04700A46EFD /* ChatModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

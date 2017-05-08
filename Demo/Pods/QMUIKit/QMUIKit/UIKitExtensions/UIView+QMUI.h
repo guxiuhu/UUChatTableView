@@ -52,9 +52,12 @@
 
 - (void)qmui_removeAllSubviews;
 
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
++ (void)qmui_animateWithAnimated:(BOOL)animated duration:(NSTimeInterval)duration animations:(void (^)(void))animations;
 @end
 
-@interface UIView (Runtime)
+@interface UIView (QMUI_Runtime)
 
 /**
  *  判断当前类是否有重写某个指定的 UIView 的方法
@@ -112,4 +115,13 @@ typedef NS_OPTIONS(NSUInteger, QMUIBorderViewPosition) {
 /// border的layer
 @property(nonatomic, strong, readonly) CAShapeLayer *qmui_borderLayer;
 
+@end
+
+/**
+ *  方便地将某个 UIView 截图并转成一个 UIImage，注意如果这个 UIView 本身做了 transform，也不会在截图上反映出来，截图始终都是原始 UIView 的截图。
+ */
+@interface UIView (QMUI_Snapshotting)
+
+- (UIImage *)qmui_snapshotLayerImage;
+- (UIImage *)qmui_snapshotImageAfterScreenUpdates:(BOOL)afterScreenUpdates;
 @end

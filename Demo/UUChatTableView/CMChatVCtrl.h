@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RootViewController : QMUICommonViewController
+@interface CMChatVCtrl : QMUICommonViewController
 
 @end

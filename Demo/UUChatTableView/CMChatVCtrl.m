@@ -6,15 +6,16 @@
 //  Copyright (c) 2015年 uyiuyao. All rights reserved.
 //
 
-#import "RootViewController.h"
+#import "CMChatVCtrl.h"
 #import "UUInputFunctionView.h"
 #import "UUMessageCell.h"
 #import "ChatModel.h"
 #import "UUMessage.h"
 #import <MJRefresh.h>
 #import <Masonry.h>
+#import <QMUIKit/QMUIKit.h>
 
-@interface RootViewController ()<UUInputFunctionViewDelegate,QMUITableViewDelegate,QMUITableViewDataSource>
+@interface CMChatVCtrl ()<UUInputFunctionViewDelegate,QMUITableViewDelegate,QMUITableViewDataSource>
 
 @property (strong, nonatomic) ChatModel *chatModel;
 
@@ -22,46 +23,32 @@
 
 @end
 
-@implementation RootViewController{
+@implementation CMChatVCtrl{
     UUInputFunctionView *IFView;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self initBar];
     [self loadBaseViewsAndData];
 
     [self addRefreshViews];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    
     [super viewDidAppear:animated];
     
-    //add notification
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardChange:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardChange:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(tableViewScrollToBottom) name:UIKeyboardDidShowNotification object:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-}
-
-- (void)initBar
-{
-    UISegmentedControl *segment = [[UISegmentedControl alloc]initWithItems:@[@" private ",@" group "]];
-    [segment addTarget:self action:@selector(segmentChanged:) forControlEvents:UIControlEventValueChanged];
-    segment.selectedSegmentIndex = 0;
-    self.navigationItem.titleView = segment;
-    
-    self.navigationController.navigationBar.tintColor = [UIColor grayColor];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize target:nil action:nil];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:nil];
-}
 - (void)segmentChanged:(UISegmentedControl *)segment
 {
     self.chatModel.isGroupChat = segment.selectedSegmentIndex;
@@ -152,7 +139,7 @@
         return;
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.chatModel.dataSource.count-1 inSection:0];
-    [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 }
 
 
@@ -225,9 +212,5 @@
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
     [self.view endEditing:YES];
-}
-
--(BOOL)canBecomeFirstResponder{
-    return YES;
 }
 @end

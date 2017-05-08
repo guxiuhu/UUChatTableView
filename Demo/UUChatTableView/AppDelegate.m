@@ -7,8 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "RootViewController.h"
-#import "QMUIConfigurationTemplate.h"
+#import "CMChatVCtrl.h"
 
 @interface AppDelegate ()
 
@@ -18,16 +17,10 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
-    // 启动QMUI的配置模板
-    [QMUIConfigurationTemplate setupConfigurationTemplate];
     
-    // 将全局的控件样式渲染出来
-    [QMUIConfigurationManager renderGlobalAppearances];
-
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     
-    RootViewController *root = [[RootViewController alloc]init];
+    CMChatVCtrl *root = [[CMChatVCtrl alloc]init];
     UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:root];
     self.window.rootViewController = nav;
     

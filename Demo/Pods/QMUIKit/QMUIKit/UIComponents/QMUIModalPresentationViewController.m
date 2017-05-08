@@ -8,7 +8,7 @@
 
 #import "QMUIModalPresentationViewController.h"
 #import "QMUICommonDefines.h"
-#import "QMUIConfiguration.h"
+#import "QMUIConfigurationMacros.h"
 #import "QMUIHelper.h"
 
 @interface UIViewController ()
@@ -198,7 +198,10 @@ static QMUIModalPresentationViewController *appearance;
     void (^didHiddenCompletion)(BOOL finished) = ^(BOOL finished) {
         
         if (self.containerWindow) {
-            [self.previousKeyWindow makeKeyWindow];
+            // 恢复 keyWindow 之前做一下检查，避免这个问题 https://github.com/QMUI/QMUI_iOS/issues/90
+            if ([[UIApplication sharedApplication] keyWindow] == self.containerWindow) {
+                [self.previousKeyWindow makeKeyWindow];
+            }
             self.containerWindow.hidden = YES;
             self.containerWindow.rootViewController = nil;
             self.previousKeyWindow = nil;
@@ -390,6 +393,7 @@ static QMUIModalPresentationViewController *appearance;
         self.containerWindow.windowLevel = UIWindowLevelQMUIAlertView;
         self.containerWindow.backgroundColor = UIColorClear;// 避免横竖屏旋转时出现黑色
     }
+    self.supportedOrientationMask = [QMUIHelper visibleViewController].supportedInterfaceOrientations;
     self.containerWindow.rootViewController = self;
     [self.containerWindow makeKeyAndVisible];
 }
@@ -415,7 +419,7 @@ static QMUIModalPresentationViewController *appearance;
             }
         }];
     } else if (self.animationStyle == QMUIModalPresentationAnimationStyleSlide) {
-        [UIView animateWithDuration:.3 delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+        [UIView animateWithDuration:.3 delay:0.0 options:QMUIViewAnimationOptionsCurveOut animations:^{
             self.dimmingView.alpha = 0.0;
             self.contentView.transform = CGAffineTransformMakeTranslation(0, CGRectGetHeight(self.view.bounds) - CGRectGetMinY(self.contentView.frame));
         } completion:^(BOOL finished) {
