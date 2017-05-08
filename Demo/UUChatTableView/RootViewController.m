@@ -10,16 +10,15 @@
 #import "UUInputFunctionView.h"
 #import "UUMessageCell.h"
 #import "ChatModel.h"
-#import "UUMessageFrame.h"
 #import "UUMessage.h"
 #import <MJRefresh.h>
+#import <Masonry.h>
 
-@interface RootViewController ()<UUInputFunctionViewDelegate,UUMessageCellDelegate,UITableViewDataSource,UITableViewDelegate>
+@interface RootViewController ()<UUInputFunctionViewDelegate,UUMessageCellDelegate,QMUITableViewDelegate,QMUITableViewDataSource>
 
 @property (strong, nonatomic) ChatModel *chatModel;
 
-@property (weak, nonatomic) IBOutlet UITableView *chatTableView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstraint;
+@property (strong, nonatomic) IBOutlet QMUITableView *chatTableView;
 
 @end
 
@@ -31,8 +30,9 @@
     [super viewDidLoad];
     
     [self initBar];
-    [self addRefreshViews];
     [self loadBaseViewsAndData];
+
+    [self addRefreshViews];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -103,6 +103,17 @@
     IFView.delegate = self;
     [self.view addSubview:IFView];
     
+    self.chatTableView = [[QMUITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
+    [self.view addSubview:self.chatTableView];
+    [self.chatTableView setDelegate:self];
+    [self.chatTableView setDataSource:self];
+    [self.chatTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        
+        make.left.and.right.equalTo(self.view);
+        make.top.equalTo(self.mas_topLayoutGuideBottom);
+        make.bottom.equalTo(IFView.mas_top).with.offset(0);
+    }];
+    
     [self.chatTableView reloadData];
     [self tableViewScrollToBottom];
 }
@@ -121,14 +132,7 @@
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
-    
-    //adjust ChatTableView's height
-    if (notification.name == UIKeyboardWillShowNotification) {
-        self.bottomConstraint.constant = keyboardEndFrame.size.height+40;
-    }else{
-        self.bottomConstraint.constant = 40;
-    }
-    
+
     [self.view layoutIfNeeded];
     
     //adjust UUInputFunctionView's originPoint
@@ -188,21 +192,33 @@
     return self.chatModel.dataSource.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UUMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CellID"];
-    if (cell == nil) {
-        cell = [[UUMessageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CellID"];
-        cell.delegate = self;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *cellIdentifier = @"cell";
+    return [self.chatTableView qmui_heightForCellWithIdentifier:cellIdentifier cacheByIndexPath:indexPath configuration:^(id cell) {
+        
+        [cell renderWithMessage:self.chatModel.dataSource[indexPath.row]];
+    }];
+}
+
+- (UITableViewCell *)qmui_tableView:(UITableView *)tableView cellWithIdentifier:(NSString *)identifier {
+    UUMessageCell *cell = (UUMessageCell *)[tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) {
+        cell = [[UUMessageCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     }
-    [cell setMessageFrame:self.chatModel.dataSource[indexPath.row]];
+    cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return [self.chatModel.dataSource[indexPath.row] cellHeight];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *cellIdentifier = @"cell";
+    UUMessageCell *cell = (UUMessageCell *)[self qmui_tableView:tableView cellWithIdentifier:cellIdentifier];
+    [cell renderWithMessage:self.chatModel.dataSource[indexPath.row]];
+    return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.chatTableView qmui_clearsSelection];
+    
     [self.view endEditing:YES];
 }
 
@@ -213,8 +229,6 @@
 #pragma mark - cellDelegate
 - (void)headImageDidClick:(UUMessageCell *)cell userId:(NSString *)userId{
     // headIamgeIcon is clicked
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:cell.messageFrame.message.strName message:@"headImage clicked" delegate:nil cancelButtonTitle:@"sure" otherButtonTitles:nil];
-    [alert show];
 }
 
 @end

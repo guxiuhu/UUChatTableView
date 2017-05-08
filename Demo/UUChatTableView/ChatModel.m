@@ -9,7 +9,6 @@
 #import "ChatModel.h"
 
 #import "UUMessage.h"
-#import "UUMessageFrame.h"
 
 @implementation ChatModel
 
@@ -28,7 +27,6 @@
 // 添加自己的item
 - (void)addSpecifiedItem:(NSDictionary *)dic
 {
-    UUMessageFrame *messageFrame = [[UUMessageFrame alloc]init];
     UUMessage *message = [[UUMessage alloc] init];
     NSMutableDictionary *dataDic = [NSMutableDictionary dictionaryWithDictionary:dic];
     
@@ -40,13 +38,11 @@
     
     [message setWithDict:dataDic];
     [message minuteOffSetStart:previousTime end:dataDic[@"strTime"]];
-    messageFrame.showTime = message.showDateLabel;
-    [messageFrame setMessage:message];
     
     if (message.showDateLabel) {
         previousTime = dataDic[@"strTime"];
     }
-    [self.dataSource addObject:messageFrame];
+    [self.dataSource addObject:message];
 }
 
 // 添加聊天item（一个cell内容）
@@ -58,17 +54,15 @@ static NSString *previousTime = nil;
     for (int i=0; i<number; i++) {
         
         NSDictionary *dataDic = [self getDic];
-        UUMessageFrame *messageFrame = [[UUMessageFrame alloc]init];
+
         UUMessage *message = [[UUMessage alloc] init];
         [message setWithDict:dataDic];
         [message minuteOffSetStart:previousTime end:dataDic[@"strTime"]];
-        messageFrame.showTime = message.showDateLabel;
-        [messageFrame setMessage:message];
         
         if (message.showDateLabel) {
             previousTime = dataDic[@"strTime"];
         }
-        [result addObject:messageFrame];
+        [result addObject:message];
     }
     return result;
 }

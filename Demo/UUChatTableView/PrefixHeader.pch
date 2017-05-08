@@ -20,5 +20,6 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import "ACMacros.h"
+#import <QMUIKit/QMUIKit.h>
 
 #endif

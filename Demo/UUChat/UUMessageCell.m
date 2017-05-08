@@ -8,11 +8,20 @@
 
 #import "UUMessageCell.h"
 #import "UUMessage.h"
-#import "UUMessageFrame.h"
 #import "UUAVAudioPlayer.h"
 #import "UIImageView+AFNetworking.h"
 #import "UIButton+AFNetworking.h"
 #import "UUImageAvatarBrowser.h"
+#import <YYCategories/NSString+YYAdd.h>
+
+#define CONTENT_TOP_BOTTOM_MARGIN 10
+
+//文字
+#define CONTENT_FONT [UIFont systemFontOfSize:14]
+#define CONTENT_TEXT_LIMIT_WIDTH 200
+
+//图片
+#define CONTENT_PIC_WIDTH_HEIGHT 200
 
 @interface UUMessageCell ()<UUAVAudioPlayerDelegate>
 {
@@ -22,7 +31,6 @@
     
     UUAVAudioPlayer *audio;
     
-    UIView *headImageBackView;
     BOOL contentVoiceIsPlaying;
 }
 @end
@@ -41,32 +49,20 @@
         self.labelTime = [[UILabel alloc] init];
         self.labelTime.textAlignment = NSTextAlignmentCenter;
         self.labelTime.textColor = [UIColor grayColor];
-        self.labelTime.font = ChatTimeFont;
+        self.labelTime.font = [UIFont systemFontOfSize:12];
         [self.contentView addSubview:self.labelTime];
         
         // 2、创建头像
-        headImageBackView = [[UIView alloc]init];
-        headImageBackView.layer.cornerRadius = 22;
-        headImageBackView.layer.masksToBounds = YES;
-        headImageBackView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.4];
-        [self.contentView addSubview:headImageBackView];
         self.btnHeadImage = [UIButton buttonWithType:UIButtonTypeCustom];
         self.btnHeadImage.layer.cornerRadius = 20;
         self.btnHeadImage.layer.masksToBounds = YES;
         [self.btnHeadImage addTarget:self action:@selector(btnHeadImageClick:)  forControlEvents:UIControlEventTouchUpInside];
-        [headImageBackView addSubview:self.btnHeadImage];
-        
-        // 3、创建头像下标
-        self.labelNum = [[UILabel alloc] init];
-        self.labelNum.textColor = [UIColor grayColor];
-        self.labelNum.textAlignment = NSTextAlignmentCenter;
-        self.labelNum.font = ChatTimeFont;
-        [self.contentView addSubview:self.labelNum];
-        
+        [self.contentView addSubview:self.btnHeadImage];
+                
         // 4、创建内容
         self.btnContent = [UUMessageContentButton buttonWithType:UIButtonTypeCustom];
         [self.btnContent setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        self.btnContent.titleLabel.font = ChatContentFont;
+        self.btnContent.titleLabel.font = CONTENT_FONT;
         self.btnContent.titleLabel.numberOfLines = 0;
         [self.btnContent addTarget:self action:@selector(btnContentClick)  forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:self.btnContent];
@@ -87,14 +83,14 @@
 //头像点击
 - (void)btnHeadImageClick:(UIButton *)button{
     if ([self.delegate respondsToSelector:@selector(headImageDidClick:userId:)])  {
-        [self.delegate headImageDidClick:self userId:self.messageFrame.message.strId];
+//        [self.delegate headImageDidClick:self userId:self.messageFrame.message.strId];
     }
 }
 
 
 - (void)btnContentClick{
     //play audio
-    if (self.messageFrame.message.type == UUMessageTypeVoice) {
+    if (self.message.type == UUMessageTypeVoice) {
         if(!contentVoiceIsPlaying){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"VoicePlayHasInterrupt" object:nil];
             contentVoiceIsPlaying = YES;
@@ -107,7 +103,7 @@
         }
     }
     //show the picture
-    else if (self.messageFrame.message.type == UUMessageTypePicture)
+    else if (self.message.type == UUMessageTypePicture)
     {
         if (self.btnContent.backImageView) {
             [UUImageAvatarBrowser showImage:self.btnContent.backImageView];
@@ -117,7 +113,7 @@
         }
     }
     // show text and gonna copy that
-    else if (self.messageFrame.message.type == UUMessageTypeText)
+    else if (self.message.type == UUMessageTypeText)
     {
         [self.btnContent becomeFirstResponder];
         UIMenuController *menu = [UIMenuController sharedMenuController];
@@ -147,32 +143,19 @@
 
 
 //内容及Frame设置
-- (void)setMessageFrame:(UUMessageFrame *)messageFrame{
-
-    _messageFrame = messageFrame;
-    UUMessage *message = messageFrame.message;
+- (void)renderWithMessage:(UUMessage *)message{
+    
+    self.message = message;
     
     // 1、设置时间
     self.labelTime.text = message.strTime;
-    self.labelTime.frame = messageFrame.timeF;
+    self.labelTime.hidden = !message.showDateLabel;
     
     // 2、设置头像
-    headImageBackView.frame = messageFrame.iconF;
-    self.btnHeadImage.frame = CGRectMake(2, 2, ChatIconWH-4, ChatIconWH-4);
     [self.btnHeadImage setBackgroundImageForState:UIControlStateNormal
                                           withURL:[NSURL URLWithString:message.strIcon]
                                  placeholderImage:[UIImage imageNamed:@"headImage.jpeg"]];
     
-    // 3、设置下标
-    self.labelNum.text = message.strName;
-    if (messageFrame.nameF.origin.x > 160) {
-        self.labelNum.frame = CGRectMake(messageFrame.nameF.origin.x - 50, messageFrame.nameF.origin.y + 3, 100, messageFrame.nameF.size.height);
-        self.labelNum.textAlignment = NSTextAlignmentRight;
-    }else{
-        self.labelNum.frame = CGRectMake(messageFrame.nameF.origin.x, messageFrame.nameF.origin.y + 3, 80, messageFrame.nameF.size.height);
-        self.labelNum.textAlignment = NSTextAlignmentLeft;
-    }
-
     // 4、设置内容
     
     //prepare for reuse
@@ -180,16 +163,14 @@
     self.btnContent.voiceBackView.hidden = YES;
     self.btnContent.backImageView.hidden = YES;
 
-    self.btnContent.frame = messageFrame.contentF;
-    
     if (message.from == UUMessageFromMe) {
         self.btnContent.isMyMessage = YES;
         [self.btnContent setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(ChatContentTop, ChatContentRight, ChatContentBottom, ChatContentLeft);
+        self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(CONTENT_TOP_BOTTOM_MARGIN, 10, CONTENT_TOP_BOTTOM_MARGIN, 15);
     }else{
         self.btnContent.isMyMessage = NO;
         [self.btnContent setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(ChatContentTop, ChatContentLeft, ChatContentBottom, ChatContentRight);
+        self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(CONTENT_TOP_BOTTOM_MARGIN, 15, CONTENT_TOP_BOTTOM_MARGIN, 10);
     }
     
     //背景气泡图
@@ -213,8 +194,6 @@
         {
             self.btnContent.backImageView.hidden = NO;
             self.btnContent.backImageView.image = message.picture;
-            self.btnContent.backImageView.frame = CGRectMake(0, 0, self.btnContent.frame.size.width, self.btnContent.frame.size.height);
-            [self makeMaskView:self.btnContent.backImageView withImage:normal];
         }
             break;
         case UUMessageTypeVoice:
@@ -230,6 +209,8 @@
             break;
     }
 }
+
+
 
 - (void)makeMaskView:(UIView *)view withImage:(UIImage *)image
 {
@@ -249,6 +230,125 @@
         NSLog(@"Device is not close to user");
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     }
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+    CGSize resultSize = CGSizeMake(size.width, 0);
+    
+    CGFloat resultHeight = 10;
+    
+    if (self.message.showDateLabel) {
+        resultHeight += 23;
+        resultHeight += 10;
+    }
+
+    switch (self.message.type) {
+        case UUMessageTypeText:
+        {
+            resultHeight += [self.message.strContent heightForFont:[UIFont systemFontOfSize:14] width:200];
+            resultHeight += 20;
+            resultHeight += 10;
+        }
+            break;
+        case UUMessageTypePicture:
+        {
+            resultHeight += CONTENT_PIC_WIDTH_HEIGHT;
+            resultHeight += 10;
+        }
+            break;
+        case UUMessageTypeVoice:
+        {
+            resultHeight += CONTENT_TOP_BOTTOM_MARGIN;
+            resultHeight += 23;
+            resultHeight += CONTENT_TOP_BOTTOM_MARGIN;
+            resultHeight += 10;
+        }
+            break;
+            
+        default:
+            break;
+    }
+
+    resultSize.height = resultHeight;
+    return resultSize;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGFloat height = 10;
+    if (self.message.showDateLabel) {
+        self.labelTime.frame = CGRectFlatMake(0, height, [UIScreen mainScreen].bounds.size.width, 23);
+        height += 23;
+        height += 10;
+    }
+    
+    //头像
+    if (self.message.from == UUMessageFromMe) {
+        
+        self.btnHeadImage.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10, height, 40, 40);
+
+    } else {
+        self.btnHeadImage.frame = CGRectMake(10, height, 40, 40);
+    }
+    
+    //内容
+    switch (self.message.type) {
+        case UUMessageTypeText:
+        {
+            CGSize content_text_size = [self.message.strContent sizeForFont:CONTENT_FONT size:CGSizeMake(CONTENT_TEXT_LIMIT_WIDTH, HUGE) mode:NSLineBreakByWordWrapping];
+            CGFloat contentHeight = content_text_size.height+CONTENT_TOP_BOTTOM_MARGIN*2;
+            CGFloat contentWidth = content_text_size.width+10+15;
+            
+            if (self.message.from == UUMessageFromMe) {
+                
+                self.btnContent.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10-contentWidth-10, height, contentWidth, contentHeight);
+                
+            } else {
+                self.btnContent.frame = CGRectMake(10+40+10, height, contentWidth, contentHeight);
+            }
+        }
+            break;
+        case UUMessageTypePicture:
+        {
+            if (self.message.from == UUMessageFromMe) {
+                
+                self.btnContent.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10-CONTENT_PIC_WIDTH_HEIGHT-10, height, CONTENT_PIC_WIDTH_HEIGHT, CONTENT_PIC_WIDTH_HEIGHT);
+                
+            } else {
+                self.btnContent.frame = CGRectMake(10+40+10, height, CONTENT_PIC_WIDTH_HEIGHT, CONTENT_PIC_WIDTH_HEIGHT);
+            }
+            self.btnContent.backImageView.frame = CGRectMake(0, 0, self.btnContent.frame.size.width, self.btnContent.frame.size.height);
+            
+            UIImage *normal;
+            if (self.message.from == UUMessageFromMe) {
+                normal = [UIImage imageNamed:@"chatto_bg_normal"];
+                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(35, 10, 10, 22)];
+            }
+            else{
+                normal = [UIImage imageNamed:@"chatfrom_bg_normal"];
+                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(35, 22, 10, 10)];
+            }
+            [self makeMaskView:self.btnContent.backImageView withImage:normal];
+
+        }
+            break;
+        case UUMessageTypeVoice:
+        {
+            if (self.message.from == UUMessageFromMe) {
+                
+                self.btnContent.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10-100-10, height, 100, 23+CONTENT_TOP_BOTTOM_MARGIN*2);
+                
+            } else {
+                self.btnContent.frame = CGRectMake(10+40+10, height, 100, 23+CONTENT_TOP_BOTTOM_MARGIN*2);
+            }
+        }
+            break;
+            
+        default:
+            break;
+    }
+
 }
 
 @end

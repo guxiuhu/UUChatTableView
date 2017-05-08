@@ -216,6 +216,7 @@
 @implementation QMUIConfigurationManager (UIAppearance)
 
 + (void)renderGlobalAppearances {
+    return;
     
     // QMUIButton
     [QMUINavigationButton renderNavigationButtonAppearanceStyle];
