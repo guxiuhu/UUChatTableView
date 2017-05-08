@@ -12,21 +12,12 @@
 @class UUMessage;
 @class UUMessageCell;
 
-@protocol UUMessageCellDelegate <NSObject>
-@optional
-- (void)headImageDidClick:(UUMessageCell *)cell userId:(NSString *)userId;
-- (void)cellContentDidClick:(UUMessageCell *)cell image:(UIImage *)contentImage;
-@end
-
-
 @interface UUMessageCell : UITableViewCell
 
 @property (nonatomic, retain)UILabel *labelTime;
 @property (nonatomic, retain)UIButton *btnHeadImage;
 
-@property (nonatomic, retain)UUMessageContentButton *btnContent;
-
-@property (nonatomic, assign)id<UUMessageCellDelegate>delegate;
+@property (nonatomic, retain) QMUIButton *btnContent;
 
 - (void)renderWithMessage:(UUMessage *)message;
 

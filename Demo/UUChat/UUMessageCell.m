@@ -23,6 +23,9 @@
 //图片
 #define CONTENT_PIC_WIDTH_HEIGHT 200
 
+//语言
+#define CONTENT_VOICE_WIDTH 120
+
 @interface UUMessageCell ()<UUAVAudioPlayerDelegate>
 {
     AVAudioPlayer *player;
@@ -60,12 +63,18 @@
         [self.contentView addSubview:self.btnHeadImage];
                 
         // 4、创建内容
-        self.btnContent = [UUMessageContentButton buttonWithType:UIButtonTypeCustom];
+        self.btnContent = [QMUIButton buttonWithType:UIButtonTypeCustom];
         [self.btnContent setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         self.btnContent.titleLabel.font = CONTENT_FONT;
         self.btnContent.titleLabel.numberOfLines = 0;
+        self.btnContent.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.btnContent.imageView.clipsToBounds = YES;
         [self.btnContent addTarget:self action:@selector(btnContentClick)  forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:self.btnContent];
+        
+        //添加长按事件
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showContentMenu:)];
+        [self.btnContent addGestureRecognizer:longPress];
         
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(UUAVAudioPlayerDidFinishPlay) name:@"VoicePlayHasInterrupt" object:nil];
         
@@ -82,11 +91,29 @@
 
 //头像点击
 - (void)btnHeadImageClick:(UIButton *)button{
-    if ([self.delegate respondsToSelector:@selector(headImageDidClick:userId:)])  {
-//        [self.delegate headImageDidClick:self userId:self.messageFrame.message.strId];
-    }
+    
 }
 
+- (void)showContentMenu:(UILongPressGestureRecognizer*)longPress{
+    
+    //直接return掉，不在开始的状态里面添加任何操作，则长按手势就会被少调用一次了
+    if (longPress.state != UIGestureRecognizerStateBegan){
+        return;
+    }
+    
+    [self becomeFirstResponder];
+    
+    UIMenuItem *copyItem = [[UIMenuItem alloc] initWithTitle:@"拷贝"action:@selector(copyContent:)];
+
+    UIMenuController *menu = [UIMenuController sharedMenuController];
+    menu.menuItems = @[copyItem];
+    [menu setTargetRect:self.btnContent.frame inView:self.contentView];
+    [menu setMenuVisible:YES animated:YES];
+}
+
+- (void)copyContent:(id)sender{
+    
+}
 
 - (void)btnContentClick{
     //play audio
@@ -105,48 +132,46 @@
     //show the picture
     else if (self.message.type == UUMessageTypePicture)
     {
-        if (self.btnContent.backImageView) {
-            [UUImageAvatarBrowser showImage:self.btnContent.backImageView];
+        if (self.btnContent.imageView) {
+            [UUImageAvatarBrowser showImage:self.btnContent.imageView];
         }
-        if ([self.delegate isKindOfClass:[UIViewController class]]) {
-            [[(UIViewController *)self.delegate view] endEditing:YES];
-        }
-    }
-    // show text and gonna copy that
-    else if (self.message.type == UUMessageTypeText)
-    {
-        [self.btnContent becomeFirstResponder];
-        UIMenuController *menu = [UIMenuController sharedMenuController];
-        [menu setTargetRect:self.btnContent.frame inView:self.btnContent.superview];
-        [menu setMenuVisible:YES animated:YES];
     }
 }
-
+//语言开始加载
 - (void)UUAVAudioPlayerBeiginLoadVoice
 {
-    [self.btnContent benginLoadVoice];
 }
+
+//语言加载完成，开始播放
 - (void)UUAVAudioPlayerBeiginPlay
 {
     //开启红外线感应
     [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
-    [self.btnContent didLoadVoice];
+    
+    self.btnContent.imageView.animationDuration = 1;
+    [self.btnContent.imageView startAnimating];
 }
+
 - (void)UUAVAudioPlayerDidFinishPlay
 {
     //关闭红外线感应
     [[UIDevice currentDevice] setProximityMonitoringEnabled:NO];
     contentVoiceIsPlaying = NO;
-    [self.btnContent stopPlay];
+
+    [self.btnContent.imageView stopAnimating];
+
     [[UUAVAudioPlayer sharedInstance]stopSound];
 }
-
 
 //内容及Frame设置
 - (void)renderWithMessage:(UUMessage *)message{
     
     self.message = message;
     
+    //初始化
+    [self.btnContent setImage:nil forState:UIControlStateNormal];
+    [self.btnContent setTitle:@"" forState:UIControlStateNormal];
+
     // 1、设置时间
     self.labelTime.text = message.strTime;
     self.labelTime.hidden = !message.showDateLabel;
@@ -155,23 +180,6 @@
     [self.btnHeadImage setBackgroundImageForState:UIControlStateNormal
                                           withURL:[NSURL URLWithString:message.strIcon]
                                  placeholderImage:[UIImage imageNamed:@"headImage.jpeg"]];
-    
-    // 4、设置内容
-    
-    //prepare for reuse
-    [self.btnContent setTitle:@"" forState:UIControlStateNormal];
-    self.btnContent.voiceBackView.hidden = YES;
-    self.btnContent.backImageView.hidden = YES;
-
-    if (message.from == UUMessageFromMe) {
-        self.btnContent.isMyMessage = YES;
-        [self.btnContent setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(CONTENT_TOP_BOTTOM_MARGIN, 10, CONTENT_TOP_BOTTOM_MARGIN, 15);
-    }else{
-        self.btnContent.isMyMessage = NO;
-        [self.btnContent setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(CONTENT_TOP_BOTTOM_MARGIN, 15, CONTENT_TOP_BOTTOM_MARGIN, 10);
-    }
     
     //背景气泡图
     UIImage *normal;
@@ -188,20 +196,56 @@
 
     switch (message.type) {
         case UUMessageTypeText:
+        {
+            
+            if (message.from == UUMessageFromMe) {
+                
+                [self.btnContent setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(CONTENT_TOP_BOTTOM_MARGIN, 10, CONTENT_TOP_BOTTOM_MARGIN, 15);
+            }else{
+                
+                [self.btnContent setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+                self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(CONTENT_TOP_BOTTOM_MARGIN, 15, CONTENT_TOP_BOTTOM_MARGIN, 10);
+            }
+
             [self.btnContent setTitle:message.strContent forState:UIControlStateNormal];
+        }
             break;
         case UUMessageTypePicture:
         {
-            self.btnContent.backImageView.hidden = NO;
-            self.btnContent.backImageView.image = message.picture;
+            self.btnContent.contentEdgeInsets = UIEdgeInsetsZero;
+            [self.btnContent setImage:message.picture forState:UIControlStateNormal];
         }
             break;
         case UUMessageTypeVoice:
         {
-            self.btnContent.voiceBackView.hidden = NO;
-            self.btnContent.second.text = [NSString stringWithFormat:@"%@'s Voice",message.strVoiceTime];
+            if (message.from == UUMessageFromMe) {
+                
+                [self.btnContent setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(CONTENT_TOP_BOTTOM_MARGIN, 10, CONTENT_TOP_BOTTOM_MARGIN, 15);
+
+                self.btnContent.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+
+                [self.btnContent setImage:[UIImage imageNamed:@"chat_animation_white3"] forState:UIControlStateNormal];
+                self.btnContent.imageView.animationImages = [NSArray arrayWithObjects:
+                                              [UIImage imageNamed:@"chat_animation_white1"],
+                                              [UIImage imageNamed:@"chat_animation_white2"],
+                                              [UIImage imageNamed:@"chat_animation_white3"],nil];
+            }else{
+                
+                [self.btnContent setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+                self.btnContent.contentEdgeInsets = UIEdgeInsetsMake(CONTENT_TOP_BOTTOM_MARGIN, 15, CONTENT_TOP_BOTTOM_MARGIN, 10);
+
+                self.btnContent.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+
+                [self.btnContent setImage:[UIImage imageNamed:@"chat_animation3"] forState:UIControlStateNormal];
+                self.btnContent.imageView.animationImages = [NSArray arrayWithObjects:
+                                                             [UIImage imageNamed:@"chat_animation1"],
+                                                             [UIImage imageNamed:@"chat_animation2"],
+                                                             [UIImage imageNamed:@"chat_animation3"],nil];
+            }
+
             songData = message.voice;
-//            voiceURL = [NSString stringWithFormat:@"%@%@",RESOURCE_URL_HOST,message.strVoice];
         }
             break;
             
@@ -209,8 +253,6 @@
             break;
     }
 }
-
-
 
 - (void)makeMaskView:(UIView *)view withImage:(UIImage *)image
 {
@@ -318,7 +360,6 @@
             } else {
                 self.btnContent.frame = CGRectMake(10+40+10, height, CONTENT_PIC_WIDTH_HEIGHT, CONTENT_PIC_WIDTH_HEIGHT);
             }
-            self.btnContent.backImageView.frame = CGRectMake(0, 0, self.btnContent.frame.size.width, self.btnContent.frame.size.height);
             
             UIImage *normal;
             if (self.message.from == UUMessageFromMe) {
@@ -329,7 +370,7 @@
                 normal = [UIImage imageNamed:@"chatfrom_bg_normal"];
                 normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(35, 22, 10, 10)];
             }
-            [self makeMaskView:self.btnContent.backImageView withImage:normal];
+            [self makeMaskView:self.btnContent.imageView withImage:normal];
 
         }
             break;
@@ -337,10 +378,10 @@
         {
             if (self.message.from == UUMessageFromMe) {
                 
-                self.btnContent.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10-100-10, height, 100, 23+CONTENT_TOP_BOTTOM_MARGIN*2);
+                self.btnContent.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10-CONTENT_VOICE_WIDTH-10, height, CONTENT_VOICE_WIDTH, 23+CONTENT_TOP_BOTTOM_MARGIN*2);
                 
             } else {
-                self.btnContent.frame = CGRectMake(10+40+10, height, 100, 23+CONTENT_TOP_BOTTOM_MARGIN*2);
+                self.btnContent.frame = CGRectMake(10+40+10, height, CONTENT_VOICE_WIDTH, 23+CONTENT_TOP_BOTTOM_MARGIN*2);
             }
         }
             break;
@@ -348,10 +389,22 @@
         default:
             break;
     }
+}
 
+- (BOOL)canBecomeFirstResponder{
+    
+    return YES;
+}
+
+// 用于UIMenuController显示，缺一不可
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    
+    if (action ==@selector(copyContent:)){
+        
+        return YES;
+    }
+    
+    return NO;//隐藏系统默认的菜单项
 }
 
 @end
-
-
-

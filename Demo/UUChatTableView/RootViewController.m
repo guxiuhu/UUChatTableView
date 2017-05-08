@@ -14,7 +14,7 @@
 #import <MJRefresh.h>
 #import <Masonry.h>
 
-@interface RootViewController ()<UUInputFunctionViewDelegate,UUMessageCellDelegate,QMUITableViewDelegate,QMUITableViewDataSource>
+@interface RootViewController ()<UUInputFunctionViewDelegate,QMUITableViewDelegate,QMUITableViewDataSource>
 
 @property (strong, nonatomic) ChatModel *chatModel;
 
@@ -106,6 +106,7 @@
     self.chatTableView = [[QMUITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
     [self.view addSubview:self.chatTableView];
     [self.chatTableView setDelegate:self];
+    [self.chatTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.chatTableView setDataSource:self];
     [self.chatTableView mas_makeConstraints:^(MASConstraintMaker *make) {
         
@@ -226,9 +227,7 @@
     [self.view endEditing:YES];
 }
 
-#pragma mark - cellDelegate
-- (void)headImageDidClick:(UUMessageCell *)cell userId:(NSString *)userId{
-    // headIamgeIcon is clicked
+-(BOOL)canBecomeFirstResponder{
+    return YES;
 }
-
 @end
