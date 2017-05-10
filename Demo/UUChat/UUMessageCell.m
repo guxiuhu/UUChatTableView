@@ -45,7 +45,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor colorWithRed:0.941 green:0.941 blue:0.941 alpha:1.00];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
 
         // 1、创建时间
@@ -184,12 +184,12 @@
     //背景气泡图
     UIImage *normal;
     if (message.from == UUMessageFromMe) {
-        normal = [UIImage imageNamed:@"chatto_bg_normal"];
-        normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(35, 10, 10, 22)];
+        normal = [UIImage imageNamed:@"chatfrom_bg_normal"];
+        normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(3, 4, 26, 10)];
     }
     else{
-        normal = [UIImage imageNamed:@"chatfrom_bg_normal"];
-        normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(35, 22, 10, 10)];
+        normal = [UIImage imageNamed:@"chatto_bg_normal"];
+        normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(26, 10, 3, 4)];
     }
     [self.btnContent setBackgroundImage:normal forState:UIControlStateNormal];
     [self.btnContent setBackgroundImage:normal forState:UIControlStateHighlighted];
@@ -363,12 +363,12 @@
             
             UIImage *normal;
             if (self.message.from == UUMessageFromMe) {
-                normal = [UIImage imageNamed:@"chatto_bg_normal"];
-                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(35, 10, 10, 22)];
+                normal = [UIImage imageNamed:@"chatfrom_bg_normal"];
+                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(3, 4, 26, 10)];
             }
             else{
-                normal = [UIImage imageNamed:@"chatfrom_bg_normal"];
-                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(35, 22, 10, 10)];
+                normal = [UIImage imageNamed:@"chatto_bg_normal"];
+                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(26, 10, 3, 4)];
             }
             [self makeMaskView:self.btnContent.imageView withImage:normal];
 

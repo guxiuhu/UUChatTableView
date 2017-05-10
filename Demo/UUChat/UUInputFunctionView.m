@@ -9,56 +9,67 @@
 #import "UUInputFunctionView.h"
 #import "Mp3Recorder.h"
 #import "UUProgressHUD.h"
-@interface UUInputFunctionView ()<UITextViewDelegate,Mp3RecorderDelegate>
+#import <Masonry.h>
+#import <TZImagePickerController.h>
+#import <TZImageManager.h>
+#import <YYCategories/UIView+YYAdd.h>
+
+#define CONTENT_HEIGHT 40
+
+@interface UUInputFunctionView ()<QMUITextViewDelegate,Mp3RecorderDelegate,AGEmojiKeyboardViewDelegate,AGEmojiKeyboardViewDataSource>
 {
     BOOL isbeginVoiceRecord;
     Mp3Recorder *MP3;
     NSInteger playTime;
     NSTimer *playTimer;
-    
-    UILabel *placeHold;
 }
 @end
 
 @implementation UUInputFunctionView
 
-- (id)initWithSuperVC:(UIViewController *)superVC
+- (id)initWithFrame:(CGRect)frame andSuperVC:(UIScrollView *)scrollview
 {
-    self.superVC = superVC;
-    CGRect frame = CGRectMake(0, Main_Screen_Height-44, Main_Screen_Width, 44);
-    
+    self.theScrollview = scrollview;
     self = [super initWithFrame:frame];
     if (self) {
         MP3 = [[Mp3Recorder alloc]initWithDelegate:self];
         self.backgroundColor = [UIColor whiteColor];
-        //发送消息
+        //更多
         self.btnSendMessage = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.btnSendMessage.frame = CGRectMake(Main_Screen_Width-40, 5, 30, 30);
-        self.isAbleToSendTextMessage = NO;
+        self.btnSendMessage.frame = CGRectMake(Main_Screen_Width-CONTENT_HEIGHT-5, (frame.size.height-CONTENT_HEIGHT)/2, CONTENT_HEIGHT, CONTENT_HEIGHT);
+
         [self.btnSendMessage setTitle:@"" forState:UIControlStateNormal];
-        [self.btnSendMessage setBackgroundImage:[UIImage imageNamed:@"Chat_take_picture"] forState:UIControlStateNormal];
+        [self.btnSendMessage setBackgroundImage:[UIImage imageNamed:@"chat_more"] forState:UIControlStateNormal];
         self.btnSendMessage.titleLabel.font = [UIFont systemFontOfSize:12];
-        [self.btnSendMessage addTarget:self action:@selector(sendMessage:) forControlEvents:UIControlEventTouchUpInside];
+        [self.btnSendMessage addTarget:self action:@selector(showMoreAction:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.btnSendMessage];
         
         //改变状态（语音、文字）
         self.btnChangeVoiceState = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.btnChangeVoiceState.frame = CGRectMake(5, 5, 30, 30);
+        self.btnChangeVoiceState.frame = CGRectMake(5, (frame.size.height-CONTENT_HEIGHT)/2, CONTENT_HEIGHT, CONTENT_HEIGHT);
         isbeginVoiceRecord = NO;
         [self.btnChangeVoiceState setBackgroundImage:[UIImage imageNamed:@"chat_voice_record"] forState:UIControlStateNormal];
         self.btnChangeVoiceState.titleLabel.font = [UIFont systemFontOfSize:12];
         [self.btnChangeVoiceState addTarget:self action:@selector(voiceRecord:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.btnChangeVoiceState];
+        
+        //表情
+        self.btnFace = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.btnFace setBackgroundImage:[UIImage imageNamed:@"chat_face"] forState:UIControlStateNormal];
+        [self.btnFace setBackgroundImage:[UIImage imageNamed:@"chat_ipunt_message"] forState:UIControlStateSelected];
+        self.btnFace.frame = CGRectMake(Main_Screen_Width-CONTENT_HEIGHT*2-5-5, (frame.size.height-CONTENT_HEIGHT)/2, CONTENT_HEIGHT, CONTENT_HEIGHT);
+        [self.btnFace addTarget:self action:@selector(showFaceAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.btnFace];
 
         //语音录入键
         self.btnVoiceRecord = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.btnVoiceRecord.frame = CGRectMake(70, 5, Main_Screen_Width-70*2, 30);
+        self.btnVoiceRecord.frame = CGRectMake(5+CONTENT_HEIGHT+5, (frame.size.height-CONTENT_HEIGHT)/2, Main_Screen_Width-3*CONTENT_HEIGHT-5*3-5*2, CONTENT_HEIGHT);
         self.btnVoiceRecord.hidden = YES;
         [self.btnVoiceRecord setBackgroundImage:[UIImage imageNamed:@"chat_message_back"] forState:UIControlStateNormal];
         [self.btnVoiceRecord setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         [self.btnVoiceRecord setTitleColor:[[UIColor lightGrayColor] colorWithAlphaComponent:0.5] forState:UIControlStateHighlighted];
-        [self.btnVoiceRecord setTitle:@"Hold to Talk" forState:UIControlStateNormal];
-        [self.btnVoiceRecord setTitle:@"Release to Send" forState:UIControlStateHighlighted];
+        [self.btnVoiceRecord setTitle:@"按住 说话" forState:UIControlStateNormal];
+        [self.btnVoiceRecord setTitle:@"松开 发送" forState:UIControlStateHighlighted];
         [self.btnVoiceRecord addTarget:self action:@selector(beginRecordVoice:) forControlEvents:UIControlEventTouchDown];
         [self.btnVoiceRecord addTarget:self action:@selector(endRecordVoice:) forControlEvents:UIControlEventTouchUpInside];
         [self.btnVoiceRecord addTarget:self action:@selector(cancelRecordVoice:) forControlEvents:UIControlEventTouchUpOutside | UIControlEventTouchCancel];
@@ -67,28 +78,33 @@
         [self addSubview:self.btnVoiceRecord];
         
         //输入框
-        self.TextViewInput = [[UITextView alloc]initWithFrame:CGRectMake(45, 5, Main_Screen_Width-2*45, 30)];
+        self.TextViewInput = [[QMUITextView alloc]initWithFrame:CGRectMake(5+CONTENT_HEIGHT+5, (frame.size.height-CONTENT_HEIGHT)/2, Main_Screen_Width-3*CONTENT_HEIGHT-5*3-5*2, CONTENT_HEIGHT)];
         self.TextViewInput.layer.cornerRadius = 4;
         self.TextViewInput.layer.masksToBounds = YES;
+        self.TextViewInput.returnKeyType = UIReturnKeySend;
+        self.TextViewInput.font = [UIFont systemFontOfSize:16];
         self.TextViewInput.delegate = self;
+        self.TextViewInput.autoResizable = YES;
+        self.TextViewInput.placeholder = @"请输入";
         self.TextViewInput.layer.borderWidth = 1;
         self.TextViewInput.layer.borderColor = [[[UIColor lightGrayColor] colorWithAlphaComponent:0.4] CGColor];
         [self addSubview:self.TextViewInput];
         
-        //输入框的提示语
-        placeHold = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, 200, 30)];
-        placeHold.text = @"Input the contents here";
-        placeHold.textColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.8];
-        [self.TextViewInput addSubview:placeHold];
-        
         //分割线
         self.layer.borderWidth = 1;
         self.layer.borderColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.3].CGColor;
-        
-        //添加通知
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(textViewDidEndEditing:) name:UIKeyboardWillHideNotification object:nil];
     }
     return self;
+}
+
+-(void)layoutSubviews{
+    
+    [super layoutSubviews];
+    
+    CGFloat contentWidth = Main_Screen_Width-2*CONTENT_HEIGHT-5*2-5*2;
+    
+    CGSize textViewSize = [self.TextViewInput sizeThatFits:CGSizeMake(contentWidth, CGFLOAT_MAX)];
+    self.TextViewInput.frame = CGRectMake(5+CONTENT_HEIGHT+5, (self.frame.size.height-CONTENT_HEIGHT)/2, Main_Screen_Width-3*CONTENT_HEIGHT-5*3-5*2, fmaxf(textViewSize.height, CONTENT_HEIGHT));
 }
 
 #pragma mark - 录音touch事件
@@ -116,17 +132,17 @@
         [playTimer invalidate];
         playTimer = nil;
     }
-    [UUProgressHUD dismissWithError:@"Cancel"];
+    [UUProgressHUD dismissWithError:@"取消"];
 }
 
 - (void)RemindDragExit:(UIButton *)button
 {
-    [UUProgressHUD changeSubTitle:@"Release to cancel"];
+    [UUProgressHUD changeSubTitle:@"松开取消"];
 }
 
 - (void)RemindDragEnter:(UIButton *)button
 {
-    [UUProgressHUD changeSubTitle:@"Slide up to cancel"];
+    [UUProgressHUD changeSubTitle:@"上滑取消"];
 }
 
 
@@ -144,7 +160,7 @@
 - (void)endConvertWithData:(NSData *)voiceData
 {
     [self.delegate UUInputFunctionView:self sendVoice:voiceData time:playTime+1];
-    [UUProgressHUD dismissWithSuccess:@"Success"];
+    [UUProgressHUD dismissWithSuccess:@"成功"];
    
     //缓冲消失时间 (最好有block回调消失完成)
     self.btnVoiceRecord.enabled = NO;
@@ -155,7 +171,7 @@
 
 - (void)failRecord
 {
-    [UUProgressHUD dismissWithSuccess:@"Too short"];
+    [UUProgressHUD dismissWithSuccess:@"时间太短"];
     
     //缓冲消失时间 (最好有block回调消失完成)
     self.btnVoiceRecord.enabled = NO;
@@ -167,6 +183,10 @@
 //改变输入与录音状态
 - (void)voiceRecord:(UIButton *)sender
 {
+    //还原键盘状态
+    [self.TextViewInput setInputView:nil];
+    [self.btnFace setSelected:NO];
+    
     self.btnVoiceRecord.hidden = !self.btnVoiceRecord.hidden;
     self.TextViewInput.hidden  = !self.TextViewInput.hidden;
     isbeginVoiceRecord = !isbeginVoiceRecord;
@@ -175,102 +195,176 @@
         [self.TextViewInput resignFirstResponder];
     }else{
         [self.btnChangeVoiceState setBackgroundImage:[UIImage imageNamed:@"chat_voice_record"] forState:UIControlStateNormal];
+        
         [self.TextViewInput becomeFirstResponder];
     }
 }
 
-//发送消息（文字图片）
-- (void)sendMessage:(UIButton *)sender
-{
-    if (self.isAbleToSendTextMessage) {
-        NSString *resultStr = [self.TextViewInput.text stringByReplacingOccurrencesOfString:@"   " withString:@""];
-        [self.delegate UUInputFunctionView:self sendMessage:resultStr];
-    }
-    else{
-        [self.TextViewInput resignFirstResponder];
-        UIActionSheet *actionSheet= [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera",@"Images",nil];
-        [actionSheet showInView:self.window];
-    }
-}
+//表情
+- (void)showFaceAction:(UIButton *)sender{
+    
+    //还原语言状态
+    self.btnVoiceRecord.hidden = YES;
+    self.TextViewInput.hidden  = NO;
+    isbeginVoiceRecord = NO;
+    [self.btnChangeVoiceState setBackgroundImage:[UIImage imageNamed:@"chat_voice_record"] forState:UIControlStateNormal];
 
-
-#pragma mark - TextViewDelegate
-
-- (void)textViewDidBeginEditing:(UITextView *)textView
-{
-    placeHold.hidden = self.TextViewInput.text.length > 0;
-}
-
-- (void)textViewDidChange:(UITextView *)textView
-{
-    [self changeSendBtnWithPhoto:textView.text.length>0?NO:YES];
-    placeHold.hidden = textView.text.length>0;
-}
-
-- (void)changeSendBtnWithPhoto:(BOOL)isPhoto
-{
-    self.isAbleToSendTextMessage = !isPhoto;
-    [self.btnSendMessage setTitle:isPhoto?@"":@"send" forState:UIControlStateNormal];
-    self.btnSendMessage.frame = RECT_CHANGE_width(self.btnSendMessage, isPhoto?30:35);
-    UIImage *image = [UIImage imageNamed:isPhoto?@"Chat_take_picture":@"chat_send_message"];
-    [self.btnSendMessage setBackgroundImage:image forState:UIControlStateNormal];
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView
-{
-    placeHold.hidden = self.TextViewInput.text.length > 0;
-}
-
-
-#pragma mark - Add Picture
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        [self addCarema];
-    }else if (buttonIndex == 1){
-        [self openPicLibrary];
-    }
-}
-
--(void)addCarema{
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.delegate = self;
-        picker.allowsEditing = YES;
-        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        [self.superVC presentViewController:picker animated:YES completion:^{}];
+    if ([self.btnFace isSelected]) {
+        
+        [self.TextViewInput setInputView:nil];
+        [self.TextViewInput reloadInputViews];
+        
+        [self.btnFace setSelected:NO];
+        
+        
     }else{
-        //如果没有提示用户
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Tip" message:@"Your device don't have camera" delegate:nil cancelButtonTitle:@"Sure" otherButtonTitles:nil];
-        [alert show];
+        
+        [self.TextViewInput setInputView:self.emojiKeyboardView];
+        [self.TextViewInput reloadInputViews];
+        
+        [self.btnFace setSelected:YES];
     }
-}
-
--(void)openPicLibrary{
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.delegate = self;
-        picker.allowsEditing = YES;
-        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        [self.superVC presentViewController:picker animated:YES completion:^{
-        }];
+    
+    //输入框成为焦点
+    if (![self.TextViewInput isFirstResponder]) {
+        [self.TextViewInput becomeFirstResponder];
     }
+
 }
 
+//更多
+- (void)showMoreAction:(UIButton *)sender
+{
+    
+    //还原语言状态
+    self.btnVoiceRecord.hidden = YES;
+    self.TextViewInput.hidden  = NO;
+    isbeginVoiceRecord = NO;
+    [self.btnChangeVoiceState setBackgroundImage:[UIImage imageNamed:@"chat_voice_record"] forState:UIControlStateNormal];
 
--(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
-    UIImage *editImage = [info objectForKey:UIImagePickerControllerEditedImage];
-    [self.superVC dismissViewControllerAnimated:YES completion:^{
-        [self.delegate UUInputFunctionView:self sendPicture:editImage];
-    }];
-}
+    //还原键盘状态
+    [self.TextViewInput setInputView:nil];
+    [self.btnFace setSelected:NO];
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
-    [self.superVC dismissViewControllerAnimated:YES completion:nil];
+    [self.TextViewInput setInputView:self.moreView];
+    [self.TextViewInput reloadInputViews];
+    
+    //输入框成为焦点
+    if (![self.TextViewInput isFirstResponder]) {
+        [self.TextViewInput becomeFirstResponder];
+    }
 }
 
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+#pragma mark - QMUITextViewDelegate
+
+-(BOOL)textViewShouldReturn:(QMUITextView *)textView{
+ 
+    NSString *resultStr = [self.TextViewInput.text stringByReplacingOccurrencesOfString:@"   " withString:@""];
+    if (![resultStr isEqualToString:@""]) {
+        [self.delegate UUInputFunctionView:self sendMessage:resultStr];
+    }
+
+    return YES;
+}
+
+- (void)textView:(QMUITextView *)textView newHeightAfterTextChanged:(CGFloat)height {
+
+    BOOL needsChangeHeight = CGRectGetHeight(textView.frame) != height;
+    if (needsChangeHeight) {
+//        [self setNeedsLayout];
+//        [self layoutIfNeeded];
+    }
+}
+
+#pragma mark ---------------------------------------------------------------------------------------
+#pragma mark - 构造方法们
+
+-(UUMoreView *)moreView{
+    
+    if (!_moreView) {
+        
+        __block UUInputFunctionView *blockSelf = self;
+        
+        _moreView = [[UUMoreView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 210)];
+        _moreView.beginTakePicture = ^(){
+          
+            blockSelf.TextViewInput.inputView = nil;
+            [blockSelf.TextViewInput endEditing:YES];
+
+            //相册
+            TZImagePickerController *imagePickerVc = [[TZImagePickerController alloc] initWithMaxImagesCount:9 delegate:nil];
+            imagePickerVc.allowPickingVideo = NO;
+            imagePickerVc.allowPickingGif = NO;
+            imagePickerVc.maxImagesCount = 1;
+            imagePickerVc.showSelectBtn = NO;
+            imagePickerVc.allowTakePicture = YES;
+            imagePickerVc.allowPickingOriginalPhoto = NO;
+            // You can get the photos by block, the same as by delegate.
+            // 你可以通过block或者代理，来得到用户选择的照片.
+            [imagePickerVc setDidFinishPickingPhotosHandle:^(NSArray<UIImage *> *photos, NSArray *assets, BOOL isSelectOriginalPhoto) {
+                
+                if (isSelectOriginalPhoto) {
+                    //发送原图
+                    for (id asset in assets) {
+                        [[TZImageManager manager] getOriginalPhotoWithAsset:asset completion:^(UIImage *photo, NSDictionary *info) {
+                            
+                        }];
+                        
+                    }
+                }else{
+                    //发送缩略图
+                    for (UIImage *img in photos) {
+                        //回调
+                    }
+                }
+                
+            }];
+            [blockSelf.viewController presentViewController:imagePickerVc animated:YES completion:nil];
+
+        };
+    }
+    
+    return _moreView;
+}
+
+
+#pragma mark - 表情
+
+-(AGEmojiKeyboardView *)emojiKeyboardView{
+    
+    if (!_emojiKeyboardView) {
+        _emojiKeyboardView = [[AGEmojiKeyboardView alloc] initWithFrame:CGRectMake(0, 0, 320, 210)
+                                                             dataSource:self];
+        _emojiKeyboardView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        _emojiKeyboardView.delegate = self;
+        
+    }
+    
+    return _emojiKeyboardView;
+}
+
+
+- (void)emojiKeyBoardView:(AGEmojiKeyboardView *)emojiKeyBoardView didUseEmoji:(NSString *)emoji {
+    
+    [self.TextViewInput replaceRange:self.TextViewInput.selectedTextRange withText:emoji];
+}
+
+-(void)emojiKeyBoardViewDidPressSend:(AGEmojiKeyboardView *)emojiKeyBoardView{
+
+}
+
+- (void)emojiKeyBoardViewDidPressBackSpace:(AGEmojiKeyboardView *)emojiKeyBoardView {
+    
+    [self.TextViewInput deleteBackward];
+}
+
+- (UIImage *)backSpaceButtonImageForEmojiKeyboardView:(AGEmojiKeyboardView *)emojiKeyboardView {
+    
+    return [UIImage imageNamed:@"emoji_delete"];
 }
 
 @end

@@ -4,26 +4,18 @@ target 'UUChatTableView' do
     pod 'pop'
     pod 'Masonry'
     pod 'CocoaLumberjack'
-    # pod 'PopupKit'
-    pod 'IQKeyboardManager'
     pod 'AFNetworking'
     pod 'MJRefresh'
     pod 'YYText'
     pod 'YYCategories'
-#    pod 'YYKeyboardManager'
-#    pod 'YYAsyncLayer'
-#    pod 'SocketRocket'
     pod 'FMDB'#数据库
-#    pod 'MGSwipeTableCell'#侧滑
     pod 'UITableView+FDTemplateLayoutCell'
     pod 'WZLBadge'#小红点
-#    pod 'MBProgressHUD'
-#    pod 'SDWebImage'
-#    pod 'MWPhotoBrowser', '~> 2.1.2'
     pod 'HMSegmentedControl'
     pod 'SDWebImage'
     pod 'MBProgressHUD'
     pod 'DACircularProgress'
-    # pod 'AsyncDisplayKit', '>= 2.0'
     pod 'QMUIKit'
+    pod 'YYKeyboardManager'
+    pod 'TZImagePickerController'
 end

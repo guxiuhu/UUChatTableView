@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AGEmojiKeyBoardView.h"
+#import "UUMoreView.h"
 
 @class UUInputFunctionView;
 
@@ -28,17 +30,27 @@
 @property (nonatomic, retain) UIButton *btnSendMessage;
 @property (nonatomic, retain) UIButton *btnChangeVoiceState;
 @property (nonatomic, retain) UIButton *btnVoiceRecord;
-@property (nonatomic, retain) UITextView *TextViewInput;
+@property (nonatomic, retain) QMUITextView *TextViewInput;
 
-@property (nonatomic, assign) BOOL isAbleToSendTextMessage;
-
-@property (nonatomic, assign) UIViewController *superVC;
+@property (nonatomic, assign) UIScrollView *theScrollview;
 
 @property (nonatomic, assign) id<UUInputFunctionViewDelegate>delegate;
 
+/**
+ *  表情
+ */
+@property (nonatomic, retain) UIButton *btnFace;
 
-- (id)initWithSuperVC:(UIViewController *)superVC;
+/**
+ *  表情界面
+ */
+@property (strong, nonatomic) AGEmojiKeyboardView *emojiKeyboardView;
 
-- (void)changeSendBtnWithPhoto:(BOOL)isPhoto;
+/**
+ *  更多界面
+ */
+@property (strong, nonatomic) UUMoreView *moreView;
+
+- (id)initWithFrame:(CGRect)frame andSuperVC:(UIScrollView *)scrollvie;
 
 @end

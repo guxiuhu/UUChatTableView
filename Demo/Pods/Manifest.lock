@@ -25,7 +25,6 @@ PODS:
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - HMSegmentedControl (1.5.3)
-  - IQKeyboardManager (4.0.9)
   - Masonry (1.0.2)
   - MBProgressHUD (1.0.0)
   - MJRefresh (3.1.12)
@@ -34,11 +33,13 @@ PODS:
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
+  - TZImagePickerController (1.7.9)
   - UITableView+FDTemplateLayoutCell (1.4)
   - WZLBadge (1.2.6)
   - YYCategories (1.0.4):
     - YYCategories/no-arc (= 1.0.4)
   - YYCategories/no-arc (1.0.4)
+  - YYKeyboardManager (1.0.1)
   - YYText (1.0.7)
 
 DEPENDENCIES:
@@ -47,16 +48,17 @@ DEPENDENCIES:
   - DACircularProgress
   - FMDB
   - HMSegmentedControl
-  - IQKeyboardManager
   - Masonry
   - MBProgressHUD
   - MJRefresh
   - pop
   - QMUIKit
   - SDWebImage
+  - TZImagePickerController
   - UITableView+FDTemplateLayoutCell
   - WZLBadge
   - YYCategories
+  - YYKeyboardManager
   - YYText
 
 SPEC CHECKSUMS:
@@ -65,18 +67,19 @@ SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   HMSegmentedControl: 7c6145afb50f26cec5f3243082f6f12b9f41318f
-  IQKeyboardManager: 322c7405df3eb5f7e50dede32ea937bf3d4364e0
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   QMUIKit: 832d89af948dcc36186c3e6b7f2bb4bbb38ba661
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  TZImagePickerController: 0a8ff228d287ebdd7d485e8c42a2a932894f1fba
   UITableView+FDTemplateLayoutCell: 234e1582bcc4e18461af91155123bb96538ed030
   WZLBadge: 9ec779dcfd94c825518b395e8315fccaabff1bfa
   YYCategories: 6bcd4314c6661a561410dce4a793379ebd306abd
+  YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
   YYText: 5c461d709e24d55a182d1441c41dc639a18a4849
 
-PODFILE CHECKSUM: 3fb84e50be988de9b6c649fd3b4a64326bb3e98b
+PODFILE CHECKSUM: ca093beb55ba65029094b78f76b0a227b285680a
 
 COCOAPODS: 1.2.1
