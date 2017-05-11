@@ -12,6 +12,7 @@
 		967657101EC1F4040028160D /* EmojisList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9676570D1EC1F4040028160D /* EmojisList.plist */; };
 		967657161EC209160028160D /* UUMoreItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 967657131EC209160028160D /* UUMoreItemCell.m */; };
 		967657171EC209160028160D /* UUMoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = 967657151EC209160028160D /* UUMoreView.m */; };
+		96B763861EC43FFD00DCB698 /* QUIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B763851EC43FFD00DCB698 /* QUIButton.m */; };
 		96C20ED31EC0C95F00C0365E /* CMChatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C20ED21EC0C95F00C0365E /* CMChatView.m */; };
 		B7B9051F1A5B770200A46EFD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B9051E1A5B770200A46EFD /* main.m */; };
 		B7B905221A5B770200A46EFD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B7B905211A5B770200A46EFD /* AppDelegate.m */; };
@@ -52,6 +53,8 @@
 		967657131EC209160028160D /* UUMoreItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUMoreItemCell.m; sourceTree = "<group>"; };
 		967657141EC209160028160D /* UUMoreView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UUMoreView.h; sourceTree = "<group>"; };
 		967657151EC209160028160D /* UUMoreView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UUMoreView.m; sourceTree = "<group>"; };
+		96B763841EC43FFD00DCB698 /* QUIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QUIButton.h; sourceTree = "<group>"; };
+		96B763851EC43FFD00DCB698 /* QUIButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QUIButton.m; sourceTree = "<group>"; };
 		96C20ED11EC0C95F00C0365E /* CMChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMChatView.h; sourceTree = "<group>"; };
 		96C20ED21EC0C95F00C0365E /* CMChatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMChatView.m; sourceTree = "<group>"; };
 		B7B905191A5B770200A46EFD /* UUChatTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UUChatTableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -254,6 +257,8 @@
 		B7B905D41A5BCFD700A46EFD /* UUChat */ = {
 			isa = PBXGroup;
 			children = (
+				96B763841EC43FFD00DCB698 /* QUIButton.h */,
+				96B763851EC43FFD00DCB698 /* QUIButton.m */,
 				B7B905D51A5BCFD700A46EFD /* UUImageAvatarBrowser.h */,
 				B7B905D61A5BCFD700A46EFD /* UUImageAvatarBrowser.m */,
 				B7B905D71A5BCFD700A46EFD /* UUAVAudioPlayer.h */,
@@ -439,6 +444,7 @@
 				B7B905451A5B772900A46EFD /* CMChatVCtrl.m in Sources */,
 				B7B905E91A5BCFD700A46EFD /* UUMessageCell.m in Sources */,
 				B7B905E71A5BCFD700A46EFD /* UUInputFunctionView.m in Sources */,
+				96B763861EC43FFD00DCB698 /* QUIButton.m in Sources */,
 				9676570E1EC1F4040028160D /* AGEmojiKeyBoardView.m in Sources */,
 				967657161EC209160028160D /* UUMoreItemCell.m in Sources */,
 				B7B9051F1A5B770200A46EFD /* main.m in Sources */,

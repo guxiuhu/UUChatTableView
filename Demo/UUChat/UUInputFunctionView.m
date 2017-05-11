@@ -13,6 +13,7 @@
 #import "TZImagePickerController.h"
 #import "TZImageManager.h"
 #import <YYCategories/UIView+YYAdd.h>
+#import "ACMacros.h"
 
 #define CONTENT_HEIGHT 40
 
