@@ -8,13 +8,14 @@
 
 #import "AGEmojiKeyBoardView.h"
 #import "AGEmojiPageView.h"
-#import <Masonry.h>
+#import "Masonry.h"
+#import "HMSegmentedControl.h"
 
 static const CGFloat ButtonWidth = 45;
 static const CGFloat ButtonHeight = 37;
 
-#define BASIC_BACKGROUND_COLOR [UIColor whiteColor]
-#define BASIC_COLOR [UIColor redColor]
+#define BASIC_BACKGROUND_COLOR [UIColor colorWithRed:0.976 green:0.976 blue:0.976 alpha:1.00]
+#define BASIC_COLOR [UIColor colorWithRed:0.984 green:0.984 blue:0.984 alpha:1.00]
 
 
 static const NSUInteger DefaultRecentEmojisMaintainedCount = 50;
@@ -25,7 +26,7 @@ NSString *const RecentUsedEmojiCharactersKey = @"RecentUsedEmojiCharactersKey";
 
 @interface AGEmojiKeyboardView () <UIScrollViewDelegate, AGEmojiPageViewDelegate>
 
-@property (nonatomic) UISegmentedControl *segmentsBar;
+@property (nonatomic) HMSegmentedControl *segmentsBar;
 @property (nonatomic) UIPageControl *pageControl;
 @property (nonatomic) UIScrollView *emojiPagesScrollView;
 @property (nonatomic) NSDictionary *emojis;
@@ -97,22 +98,19 @@ NSString *const RecentUsedEmojiCharactersKey = @"RecentUsedEmojiCharactersKey";
         
         self.category = [self categoryNameAtIndex:self.defaultSelectedCategory];
         
-        
-        self.toolbar = [[UIView alloc]initWithFrame:CGRectMake(0,0,CGRectGetWidth(self.bounds),30)];
+        //底部工具栏
+        self.toolbar = [[UIView alloc]initWithFrame:CGRectZero];
         [self.toolbar setBackgroundColor:[UIColor whiteColor]];
         [self addSubview:self.toolbar];
         
-        self.segmentsBar = [[UISegmentedControl alloc] initWithItems:@[[UIImage imageNamed:@"emoji_recent"],[UIImage imageNamed:@"emoji_1"],[UIImage imageNamed:@"emoji_2"],[UIImage imageNamed:@"emoji_3"],[UIImage imageNamed:@"emoji_4"],[UIImage imageNamed:@"emoji_5"]]];
-        self.segmentsBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        self.segmentsBar.tintColor = BASIC_COLOR;
-        [self.segmentsBar addTarget:self
-                             action:@selector(categoryChangedViaSegmentsBar:)
-                   forControlEvents:UIControlEventValueChanged];
+        //表情切换
+        self.segmentsBar = [[HMSegmentedControl alloc] initWithSectionImages:@[[UIImage imageNamed:@"emoji_recent"],[UIImage imageNamed:@"emoji_1"],[UIImage imageNamed:@"emoji_2"],[UIImage imageNamed:@"emoji_3"],[UIImage imageNamed:@"emoji_4"],[UIImage imageNamed:@"emoji_5"]] sectionSelectedImages:@[[UIImage imageNamed:@"emoji_recent"],[UIImage imageNamed:@"emoji_1"],[UIImage imageNamed:@"emoji_2"],[UIImage imageNamed:@"emoji_3"],[UIImage imageNamed:@"emoji_4"],[UIImage imageNamed:@"emoji_5"]]];
+        self.segmentsBar.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleWidth;
+        self.segmentsBar.selectionIndicatorLocation = HMSegmentedControlSelectionIndicatorLocationNone;
+        self.segmentsBar.selectionStyle = HMSegmentedControlSelectionStyleBox;
+        self.segmentsBar.selectionIndicatorColor = [UIColor colorWithRed:0.3 green:0.3 blue:0.3 alpha:1];
+        [self.segmentsBar addTarget:self action:@selector(categoryChangedViaSegmentsBar:) forControlEvents:UIControlEventValueChanged];
         self.segmentsBar.selectedSegmentIndex = self.defaultSelectedCategory;
-        self.segmentsBar.layer.borderWidth = 5;
-        
-        self.segmentsBar.layer.borderColor = [UIColor whiteColor].CGColor;
-        self.segmentsBar.layer.cornerRadius = 0;
         
         [self.toolbar addSubview:self.segmentsBar];
         [self.segmentsBar mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -120,11 +118,13 @@ NSString *const RecentUsedEmojiCharactersKey = @"RecentUsedEmojiCharactersKey";
             make.right.equalTo(self.toolbar.mas_right).with.offset(-60);
             
         }];
+        
         //工具栏
         UIButton *sendBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [sendBtn setFrame:CGRectMake(CGRectGetWidth(self.bounds)-60,0,60,CGRectGetHeight(self.toolbar.bounds))];
         [sendBtn addTarget:self action:@selector(sendCurrentAction:) forControlEvents:UIControlEventTouchUpInside];
         [sendBtn setTitle:@"发送" forState:UIControlStateNormal];
+        [sendBtn setTitleColor:[UIColor colorWithRed:0.600 green:0.600 blue:0.600 alpha:1.00] forState:UIControlStateNormal];
         [sendBtn setBackgroundColor:BASIC_COLOR];
         [self.toolbar addSubview:sendBtn];
         [sendBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -132,9 +132,11 @@ NSString *const RecentUsedEmojiCharactersKey = @"RecentUsedEmojiCharactersKey";
             make.width.mas_equalTo(60);
         }];
         
-        
+        //指示器
         self.pageControl = [[UIPageControl alloc] init];
         self.pageControl.hidesForSinglePage = YES;
+        self.pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:0.545 green:0.545 blue:0.545 alpha:1.00];
+        self.pageControl.pageIndicatorTintColor = [UIColor colorWithRed:0.733 green:0.733 blue:0.733 alpha:1.00];
         self.pageControl.currentPage = 0;
         self.pageControl.backgroundColor = [UIColor clearColor];
         CGSize pageControlSize = [self.pageControl sizeForNumberOfPages:3];
@@ -172,9 +174,9 @@ NSString *const RecentUsedEmojiCharactersKey = @"RecentUsedEmojiCharactersKey";
 - (void)layoutSubviews {
     
     self.toolbar.frame = CGRectMake(0,
-                                    CGRectGetHeight(self.bounds) - 30,
+                                    CGRectGetHeight(self.bounds) - 40,
                                     CGRectGetWidth(self.bounds),
-                                    30);
+                                    40);
     
     CGSize pageControlSize = [self.pageControl sizeForNumberOfPages:3];
     NSUInteger numberOfPages = [self numberOfPagesForCategory:self.category

@@ -9,9 +9,9 @@
 #import "UUInputFunctionView.h"
 #import "Mp3Recorder.h"
 #import "UUProgressHUD.h"
-#import <Masonry.h>
-#import <TZImagePickerController.h>
-#import <TZImageManager.h>
+#import "Masonry.h"
+#import "TZImagePickerController.h"
+#import "TZImageManager.h"
 #import <YYCategories/UIView+YYAdd.h>
 
 #define CONTENT_HEIGHT 40
@@ -289,7 +289,7 @@
         
         __block UUInputFunctionView *blockSelf = self;
         
-        _moreView = [[UUMoreView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 210)];
+        _moreView = [[UUMoreView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 260)];
         _moreView.beginTakePicture = ^(){
           
             blockSelf.TextViewInput.inputView = nil;
@@ -312,6 +312,8 @@
                     for (id asset in assets) {
                         [[TZImageManager manager] getOriginalPhotoWithAsset:asset completion:^(UIImage *photo, NSDictionary *info) {
                             
+                            [blockSelf.delegate UUInputFunctionView:blockSelf sendPicture:photo];
+                            
                         }];
                         
                     }
@@ -319,12 +321,12 @@
                     //发送缩略图
                     for (UIImage *img in photos) {
                         //回调
+                        [blockSelf.delegate UUInputFunctionView:blockSelf sendPicture:img];
                     }
                 }
                 
             }];
             [blockSelf.viewController presentViewController:imagePickerVc animated:YES completion:nil];
-
         };
     }
     
@@ -337,9 +339,8 @@
 -(AGEmojiKeyboardView *)emojiKeyboardView{
     
     if (!_emojiKeyboardView) {
-        _emojiKeyboardView = [[AGEmojiKeyboardView alloc] initWithFrame:CGRectMake(0, 0, 320, 210)
+        _emojiKeyboardView = [[AGEmojiKeyboardView alloc] initWithFrame:CGRectMake(0, 0, 320, 260)
                                                              dataSource:self];
-        _emojiKeyboardView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
         _emojiKeyboardView.delegate = self;
         
     }
@@ -355,6 +356,10 @@
 
 -(void)emojiKeyBoardViewDidPressSend:(AGEmojiKeyboardView *)emojiKeyBoardView{
 
+    NSString *resultStr = [self.TextViewInput.text stringByReplacingOccurrencesOfString:@"   " withString:@""];
+    if (![resultStr isEqualToString:@""]) {
+        [self.delegate UUInputFunctionView:self sendMessage:resultStr];
+    }
 }
 
 - (void)emojiKeyBoardViewDidPressBackSpace:(AGEmojiKeyboardView *)emojiKeyBoardView {

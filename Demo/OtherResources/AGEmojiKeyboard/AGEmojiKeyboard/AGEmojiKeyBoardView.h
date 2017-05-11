@@ -34,11 +34,6 @@ typedef NS_ENUM(NSInteger, AGEmojiKeyboardViewCategoryImage) {
 @property (strong, nonatomic) UIView *toolbar;
 
 /**
- Segment control displays the categories.
- */
-@property (nonatomic, readonly) UISegmentedControl *segmentsBar;
-
-/**
  Pagecontrol displays the current page and number of pages on an emoji page.
  */
 @property (nonatomic, readonly) UIPageControl *pageControl;

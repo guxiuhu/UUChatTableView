@@ -185,11 +185,11 @@
     UIImage *normal;
     if (message.from == UUMessageFromMe) {
         normal = [UIImage imageNamed:@"chatfrom_bg_normal"];
-        normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(3, 4, 26, 10)];
+        normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(24, 4, 3, 10)];
     }
     else{
         normal = [UIImage imageNamed:@"chatto_bg_normal"];
-        normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(26, 10, 3, 4)];
+        normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(24, 10, 3, 4)];
     }
     [self.btnContent setBackgroundImage:normal forState:UIControlStateNormal];
     [self.btnContent setBackgroundImage:normal forState:UIControlStateHighlighted];
@@ -364,11 +364,11 @@
             UIImage *normal;
             if (self.message.from == UUMessageFromMe) {
                 normal = [UIImage imageNamed:@"chatfrom_bg_normal"];
-                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(3, 4, 26, 10)];
+                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(24, 4, 3, 10)];
             }
             else{
                 normal = [UIImage imageNamed:@"chatto_bg_normal"];
-                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(26, 10, 3, 4)];
+                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(24, 10, 3, 4)];
             }
             [self makeMaskView:self.btnContent.imageView withImage:normal];
 

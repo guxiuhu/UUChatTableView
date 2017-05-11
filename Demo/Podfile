@@ -1,5 +1,7 @@
 platform :ios, '8.0'
 
+use_frameworks!
+
 target 'UUChatTableView' do
     pod 'pop'
     pod 'Masonry'
@@ -18,4 +20,5 @@ target 'UUChatTableView' do
     pod 'QMUIKit'
     pod 'YYKeyboardManager'
     pod 'TZImagePickerController'
+    pod 'HMSegmentedControl'
 end
