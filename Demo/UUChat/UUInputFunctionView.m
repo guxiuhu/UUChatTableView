@@ -329,6 +329,10 @@
             }];
             [blockSelf.viewController presentViewController:imagePickerVc animated:YES completion:nil];
         };
+        _moreView.beginSendGift = ^(){
+          
+            [blockSelf.delegate UUInputFunctionView:blockSelf sendGift:[UIImage imageNamed:@"chatfrom_doctor_icon"] andTitle:@"黄瓜"];
+        };
     }
     
     return _moreView;

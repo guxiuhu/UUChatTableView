@@ -90,7 +90,9 @@
             break;
         case 1:
         {
-
+            if (self.beginSendGift) {
+                self.beginSendGift();
+            }
         }
             break;
         default:

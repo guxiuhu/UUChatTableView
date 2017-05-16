@@ -11,5 +11,6 @@
 @interface UUMoreView : UIView
 
 @property (nonatomic, copy) void (^beginTakePicture)();
+@property (nonatomic, copy) void (^beginSendGift)();
 
 @end

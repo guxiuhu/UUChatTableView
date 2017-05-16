@@ -61,15 +61,5 @@
     anim2.fromValue = [NSValue valueWithCGRect:self.scrollview.frame];
     anim2.toValue = [NSValue valueWithCGRect:textframe];
     [self.scrollview pop_addAnimation:anim2 forKey:@"fade"];
-
-
-//    [UIView animateWithDuration:0.25 delay:0 options:transition.animationOption animations:^{
-//        CGRect kbFrame = [[YYKeyboardManager defaultManager] convertRect:transition.toFrame toView:self.view];
-//        CGRect textframe = self.scrollview.frame;
-//        textframe.origin.y = kbFrame.origin.y - textframe.size.height;
-//        self.scrollview.frame = textframe;
-//    } completion:^(BOOL finished) {
-//        
-//    }];
 }
 @end

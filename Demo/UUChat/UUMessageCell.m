@@ -248,7 +248,23 @@
             songData = message.voice;
         }
             break;
+        case UUMessageTypeGift:
+        {
             
+            UIImage *normal;
+            if (message.from == UUMessageFromMe) {
+                normal = [UIImage imageNamed:@"message_gift_bg_2"];
+                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(60, 70, 20, 30)];
+            }
+            else{
+                normal = [UIImage imageNamed:@"message_gift_bg_1"];
+                normal = [normal resizableImageWithCapInsets:UIEdgeInsetsMake(24, 10, 3, 4)];
+            }
+            [self.btnContent setBackgroundImage:normal forState:UIControlStateNormal];
+            [self.btnContent setBackgroundImage:normal forState:UIControlStateHighlighted];
+
+        }
+            break;
         default:
             break;
     }
@@ -306,7 +322,12 @@
             resultHeight += 10;
         }
             break;
-            
+        case UUMessageTypeGift:
+        {
+            resultHeight += CONTENT_PIC_WIDTH_HEIGHT;
+            resultHeight += 10;
+        }
+            break;
         default:
             break;
     }
@@ -385,7 +406,18 @@
             }
         }
             break;
-            
+        case UUMessageTypeGift:
+        {
+            if (self.message.from == UUMessageFromMe) {
+                
+                self.btnContent.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10-CONTENT_PIC_WIDTH_HEIGHT-10, height, CONTENT_PIC_WIDTH_HEIGHT, CONTENT_PIC_WIDTH_HEIGHT);
+                
+            } else {
+                self.btnContent.frame = CGRectMake(10+40+10, height, CONTENT_PIC_WIDTH_HEIGHT, CONTENT_PIC_WIDTH_HEIGHT);
+            }
+        }
+            break;
+
         default:
             break;
     }

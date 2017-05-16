@@ -23,6 +23,9 @@
 // audio
 - (void)UUInputFunctionView:(UUInputFunctionView *)funcView sendVoice:(NSData *)voice time:(NSInteger)second;
 
+//gift
+- (void)UUInputFunctionView:(UUInputFunctionView *)funcView sendGift:(UIImage*)img andTitle:(NSString*)title;
+
 @end
 
 @interface UUInputFunctionView : UIView <UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>

@@ -13,6 +13,7 @@
 @implementation ChatModel
 
 - (void)populateRandomDataSource {
+    
     self.dataSource = [NSMutableArray array];
     [self.dataSource addObjectsFromArray:[self additems:5]];
 }

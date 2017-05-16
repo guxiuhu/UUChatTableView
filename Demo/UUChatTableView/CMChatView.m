@@ -128,6 +128,15 @@
     [self dealTheFunctionData:dic];
 }
 
+-(void)UUInputFunctionView:(UUInputFunctionView *)funcView sendGift:(UIImage *)img andTitle:(NSString *)title{
+    
+    NSDictionary *dic = @{@"giftImg": img,
+                          @"giftTitle": title,
+                          @"type": @(UUMessageTypeGift)};
+    [self dealTheFunctionData:dic];
+
+}
+
 - (void)dealTheFunctionData:(NSDictionary *)dic
 {
     [self.chatModel addSpecifiedItem:dic];
