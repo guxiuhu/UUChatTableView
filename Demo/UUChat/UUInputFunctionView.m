@@ -36,7 +36,7 @@
         MP3 = [[Mp3Recorder alloc]initWithDelegate:self];
         self.backgroundColor = [UIColor whiteColor];
         //更多
-        self.btnSendMessage = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.btnSendMessage = [QUIButton buttonWithType:UIButtonTypeCustom];
         self.btnSendMessage.frame = CGRectMake(Main_Screen_Width-CONTENT_HEIGHT-5, (frame.size.height-CONTENT_HEIGHT)/2, CONTENT_HEIGHT, CONTENT_HEIGHT);
 
         [self.btnSendMessage setTitle:@"" forState:UIControlStateNormal];
@@ -46,7 +46,7 @@
         [self addSubview:self.btnSendMessage];
         
         //改变状态（语音、文字）
-        self.btnChangeVoiceState = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.btnChangeVoiceState = [QUIButton buttonWithType:UIButtonTypeCustom];
         self.btnChangeVoiceState.frame = CGRectMake(5, (frame.size.height-CONTENT_HEIGHT)/2, CONTENT_HEIGHT, CONTENT_HEIGHT);
         isbeginVoiceRecord = NO;
         [self.btnChangeVoiceState setBackgroundImage:[UIImage imageNamed:@"chat_voice_record"] forState:UIControlStateNormal];
@@ -55,7 +55,7 @@
         [self addSubview:self.btnChangeVoiceState];
         
         //表情
-        self.btnFace = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.btnFace = [QUIButton buttonWithType:UIButtonTypeCustom];
         [self.btnFace setBackgroundImage:[UIImage imageNamed:@"chat_face"] forState:UIControlStateNormal];
         [self.btnFace setBackgroundImage:[UIImage imageNamed:@"chat_ipunt_message"] forState:UIControlStateSelected];
         self.btnFace.frame = CGRectMake(Main_Screen_Width-CONTENT_HEIGHT*2-5-5, (frame.size.height-CONTENT_HEIGHT)/2, CONTENT_HEIGHT, CONTENT_HEIGHT);
@@ -63,7 +63,7 @@
         [self addSubview:self.btnFace];
 
         //语音录入键
-        self.btnVoiceRecord = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.btnVoiceRecord = [QUIButton buttonWithType:UIButtonTypeCustom];
         self.btnVoiceRecord.frame = CGRectMake(5+CONTENT_HEIGHT+5, (frame.size.height-CONTENT_HEIGHT)/2, Main_Screen_Width-3*CONTENT_HEIGHT-5*3-5*2, CONTENT_HEIGHT);
         self.btnVoiceRecord.hidden = YES;
         [self.btnVoiceRecord setBackgroundImage:[UIImage imageNamed:@"chat_message_back"] forState:UIControlStateNormal];
@@ -109,7 +109,7 @@
 }
 
 #pragma mark - 录音touch事件
-- (void)beginRecordVoice:(UIButton *)button
+- (void)beginRecordVoice:(QUIButton *)button
 {
     [MP3 startRecord];
     playTime = 0;
@@ -117,7 +117,7 @@
     [UUProgressHUD show];
 }
 
-- (void)endRecordVoice:(UIButton *)button
+- (void)endRecordVoice:(QUIButton *)button
 {
     if (playTimer) {
         [MP3 stopRecord];
@@ -126,7 +126,7 @@
     }
 }
 
-- (void)cancelRecordVoice:(UIButton *)button
+- (void)cancelRecordVoice:(QUIButton *)button
 {
     if (playTimer) {
         [MP3 cancelRecord];
@@ -136,12 +136,12 @@
     [UUProgressHUD dismissWithError:@"取消"];
 }
 
-- (void)RemindDragExit:(UIButton *)button
+- (void)RemindDragExit:(QUIButton *)button
 {
     [UUProgressHUD changeSubTitle:@"松开取消"];
 }
 
-- (void)RemindDragEnter:(UIButton *)button
+- (void)RemindDragEnter:(QUIButton *)button
 {
     [UUProgressHUD changeSubTitle:@"上滑取消"];
 }
@@ -182,7 +182,7 @@
 }
 
 //改变输入与录音状态
-- (void)voiceRecord:(UIButton *)sender
+- (void)voiceRecord:(QUIButton *)sender
 {
     //还原键盘状态
     [self.TextViewInput setInputView:nil];
@@ -202,7 +202,7 @@
 }
 
 //表情
-- (void)showFaceAction:(UIButton *)sender{
+- (void)showFaceAction:(QUIButton *)sender{
     
     //还原语言状态
     self.btnVoiceRecord.hidden = YES;
@@ -234,7 +234,7 @@
 }
 
 //更多
-- (void)showMoreAction:(UIButton *)sender
+- (void)showMoreAction:(QUIButton *)sender
 {
     
     //还原语言状态

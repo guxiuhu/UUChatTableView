@@ -20,12 +20,14 @@
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event{
     
-    NSLog(@"commmmmmmmmmmmm");
-    
     BOOL inside = [super pointInside: point withEvent: event];
+    
+    NSLog(@"%d   %d    %d",inside,self.isHighlighted,event.type);
     
     if (inside && !self.isHighlighted && event.type == UIEventTypeTouches){
         self.highlighted = YES;
+        
+        NSLog(@"commmmmmmmmmmmm");
     }
     
     return inside;

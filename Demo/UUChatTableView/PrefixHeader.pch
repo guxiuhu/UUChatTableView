@@ -22,4 +22,9 @@
 #import "ACMacros.h"
 #import <QMUIKit/QMUIKit.h>
 
+//====================
+// 添加KVO相关
+#import "FBKVOController.h"
+#import "NSObject+FBKVOController.h"
+
 #endif

@@ -226,11 +226,11 @@
 
                 self.btnContent.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
 
-                [self.btnContent setImage:[UIImage imageNamed:@"chat_animation_white3"] forState:UIControlStateNormal];
+                [self.btnContent setImage:[UIImage imageNamed:@"my_voice3"] forState:UIControlStateNormal];
                 self.btnContent.imageView.animationImages = [NSArray arrayWithObjects:
-                                              [UIImage imageNamed:@"chat_animation_white1"],
-                                              [UIImage imageNamed:@"chat_animation_white2"],
-                                              [UIImage imageNamed:@"chat_animation_white3"],nil];
+                                              [UIImage imageNamed:@"my_voice1"],
+                                              [UIImage imageNamed:@"my_voice2"],
+                                              [UIImage imageNamed:@"my_voice3"],nil];
             }else{
                 
                 [self.btnContent setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
@@ -238,11 +238,11 @@
 
                 self.btnContent.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
 
-                [self.btnContent setImage:[UIImage imageNamed:@"chat_animation3"] forState:UIControlStateNormal];
+                [self.btnContent setImage:[UIImage imageNamed:@"other_voice3"] forState:UIControlStateNormal];
                 self.btnContent.imageView.animationImages = [NSArray arrayWithObjects:
-                                                             [UIImage imageNamed:@"chat_animation1"],
-                                                             [UIImage imageNamed:@"chat_animation2"],
-                                                             [UIImage imageNamed:@"chat_animation3"],nil];
+                                                             [UIImage imageNamed:@"other_voice1"],
+                                                             [UIImage imageNamed:@"other_voice2"],
+                                                             [UIImage imageNamed:@"other_voice3"],nil];
             }
 
             songData = message.voice;
@@ -317,7 +317,7 @@
         case UUMessageTypeVoice:
         {
             resultHeight += CONTENT_TOP_BOTTOM_MARGIN;
-            resultHeight += 23;
+            resultHeight += 30;
             resultHeight += CONTENT_TOP_BOTTOM_MARGIN;
             resultHeight += 10;
         }
@@ -399,10 +399,10 @@
         {
             if (self.message.from == UUMessageFromMe) {
                 
-                self.btnContent.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10-CONTENT_VOICE_WIDTH-10, height, CONTENT_VOICE_WIDTH, 23+CONTENT_TOP_BOTTOM_MARGIN*2);
+                self.btnContent.frame = CGRectMake([UIScreen mainScreen].bounds.size.width-40-10-CONTENT_VOICE_WIDTH-10, height, CONTENT_VOICE_WIDTH, 30+CONTENT_TOP_BOTTOM_MARGIN*2);
                 
             } else {
-                self.btnContent.frame = CGRectMake(10+40+10, height, CONTENT_VOICE_WIDTH, 23+CONTENT_TOP_BOTTOM_MARGIN*2);
+                self.btnContent.frame = CGRectMake(10+40+10, height, CONTENT_VOICE_WIDTH, 30+CONTENT_TOP_BOTTOM_MARGIN*2);
             }
         }
             break;

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AGEmojiKeyBoardView.h"
 #import "UUMoreView.h"
+#import "QUIButton.h"
 
 @class UUInputFunctionView;
 
@@ -30,9 +31,9 @@
 
 @interface UUInputFunctionView : UIView <UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 
-@property (nonatomic, retain) UIButton *btnSendMessage;
-@property (nonatomic, retain) UIButton *btnChangeVoiceState;
-@property (nonatomic, retain) UIButton *btnVoiceRecord;
+@property (nonatomic, retain) QUIButton *btnSendMessage;
+@property (nonatomic, retain) QUIButton *btnChangeVoiceState;
+@property (nonatomic, retain) QUIButton *btnVoiceRecord;
 @property (nonatomic, retain) QMUITextView *TextViewInput;
 
 @property (nonatomic, assign) UIScrollView *theScrollview;
@@ -42,7 +43,7 @@
 /**
  *  表情
  */
-@property (nonatomic, retain) UIButton *btnFace;
+@property (nonatomic, retain) QUIButton *btnFace;
 
 /**
  *  表情界面

@@ -75,6 +75,11 @@
     self.IFView = [[UUInputFunctionView alloc]initWithFrame:CGRectMake(0, self.frame.size.height-IFView_Height, self.frame.size.width, IFView_Height) andSuperVC:self.theScrollView];
     self.IFView.delegate = self;
     [self addSubview:self.IFView];
+    [self.IFView mas_makeConstraints:^(MASConstraintMaker *make) {
+       
+        make.left.and.right.and.bottom.equalTo(self);
+        make.height.mas_equalTo(IFView_Height);
+    }];
     
     self.chatTableView = [[QMUITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
     [self addSubview:self.chatTableView];
